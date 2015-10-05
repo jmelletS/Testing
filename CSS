@@ -1,6 +1,41 @@
+In the Header place: 
 
-#button li a:hover {
-background-color: #2586d7;
-margin-top:-2px;
-padding-bottom:12px;
+<?php
+$menu = array();
+$menu['home'] = 'Home';
+$menu['mypage'] = 'My Page';
+//Add in the format of: $menu['page name'] = 'Page Title';
+$title='Home'; //Default title
+function generateMenu()    {
+    global $menu,$default,$title;
+    echo '    <ul>';
+    $p = isset($_GET['p']) ? $_GET['p'] : $default;
+    foreach ($menu as $link=>$item)    {
+        $class='';
+        if ($link==$p)    {
+            $class=' class="selected"';
+            $title=$item;
+        }
+        echo '<li><a href="?p='.$link.'"'.$class.'>'.$item.'</a></li>';
+    }
+    echo '</ul>';
 }
+?> 
+
+Then, place the following within the page you want the content to load: 
+
+<?php
+
+$default = 'home'; //Whatever default page you want to display if the file doesn't exist or you've just arrived to the home page.
+$page = isset($_GET['p']) ? $_GET['p'] : $default; //Checks if ?p is set, and puts the page in and if not, it goes to the default page.
+$page = basename($page); //Gets the page name only, and no directories.
+if (!file_exists(''.$page.'.php'))    { //Checks if the file doesn't exist
+    $page = $default; //If it doesn't, it'll revert back to the default page
+    //NOTE: Alternatively, you can make up a 404 page, and replace $default with whatever the page name is. Make sure it's still in the inc/ directory.
+}
+include(''.$page.'.php'); //And now it's on your page!
+?> 
+
+The links to activate the page will be added as this: 
+
+<a href="?p=Home"> Home</a>
